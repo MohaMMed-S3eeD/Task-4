@@ -16,7 +16,7 @@
       let Tasks = [];
       let counter = 0;
 
-      // function validateInput
+      // Function to validate the input task
       const validateInput = (task) => {
         if (task === null || task.trim() === "") {
           alert("Please enter a valid task.");
@@ -25,7 +25,7 @@
         return true;
       };
 
-      // function AddTask
+      // Function to add a new task to the list
       const addTask = () => {
         let task_Input = document.getElementById("taskInput");
         let task = task_Input.value;
@@ -41,6 +41,27 @@
           renderList();
         }
       };
+
+      // Function to delete a task from the list
+      const deleteTask = (i) => {
+        Tasks = Tasks.filter((_, index) => index !== i);
+        counter--;
+        renderList();
+      };
+
+      // Function to toggle task status
+      const toggle = (index) => {
+        Tasks[index].done = !Tasks[index].done;
+        renderList();
+
+        // Check if all tasks are done
+        let allDone = Tasks.length > 0 && Tasks.every((task) => task.done);
+        if (allDone) {
+          alert("All tasks done!");
+        }
+      };
+
+      // Function to display the task list in the DOM
       const renderList = () => {
         const ul = document.getElementById("taskList");
         ul.innerHTML = "";
@@ -50,14 +71,17 @@
           const li = document.createElement("li");
           li.textContent = task.name;
 
+          // if task is done or not
           if (task.done) {
             li.style.textDecoration = "line-through";
           }
 
+          // Button to toggle task status
           const toggleButton = document.createElement("button");
           toggleButton.textContent = "Toggle";
           toggleButton.addEventListener("click", () => toggle(index));
 
+          // Button to delete task
           const deleteButton = document.createElement("button");
           deleteButton.textContent = "Delete";
           deleteButton.addEventListener("click", () => deleteTask(index));
@@ -67,23 +91,7 @@
           fragment.appendChild(li);
         });
 
-        ul.appendChild(fragment);
-      };
-
-      // function toggle
-      const toggle = (index) => {
-        Tasks[index].done = !Tasks[index].done;
-        renderList();
-        let allDone = Tasks.length > 0 && Tasks.every((task) => task.done);
-        if (allDone) {
-          alert("All tasks done!");
-        }
-      };
-      // function deleteTask
-      const deleteTask = (i) => {
-        Tasks = Tasks.filter((_, index) => index !== i);
-        counter--;
-        renderList();
+        ul.appendChild(fragment); // Render all tasks at once to the list
       };
     </script>
   </body>
