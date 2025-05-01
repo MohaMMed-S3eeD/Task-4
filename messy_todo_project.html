@@ -3,14 +3,45 @@
   <head>
     <title>Messy ToDo</title>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SweetAlert2 CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
   </head>
-  <body>
-    <h1>Todo List</h1>
-    <input id="taskInput" type="text" title="input" />
-    <button onclick="addTask()">Add Task</button>
-    <ul id="taskList"></ul>
+  <body
+    class="bg-black text-white h-full mt-10 flex flex-col items-center justify-center"
+  >
+    <div class="text-center px-4">
+      <h4 class="text-yellow-300 font-bold text-xl mb-4">WELCOME</h4>
+      <h1 class="text-4xl font-bold">Task App</h1>
+    </div>
+
+    <div class="flex flex-col sm:flex-row mt-10 gap-4 px-4">
+      <input
+        id="taskInput"
+        type="text"
+        placeholder="Add your task..."
+        class="px-4 py-2 rounded-full w-full bg-[#18181B] text-white focus:outline-none focus:ring focus:ring-yellow-300"
+      />
+      <button
+        onclick="addTask()"
+        class="bg-yellow-300 text-black px-6 py-2 rounded-full hover:bg-yellow-500 transition duration-300 ease-in-out"
+      >
+        ADD
+      </button>
+    </div>
+
+    <ul
+      id="taskList"
+      class="mt-8 space-y-2 p-4 bg-[#18181B] rounded-xl shadow-lg mx-auto text-center w-full max-w-md px-4"
+    >
+      <li><h1>No Tasks</h1></li>
+    </ul>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <script>
       let Tasks = [];
@@ -19,7 +50,15 @@
       // Function to validate the input task
       const validateInput = (task) => {
         if (task === null || task.trim() === "") {
-          alert("Please enter a valid task.");
+          // alert("Please enter a valid task.");
+          Swal.fire({
+            icon: "error",
+            title: "",
+            text: "Please enter a valid task.",
+            background: "#18181B",
+            color: "#fff",
+            confirmButtonColor: "#FACC15",
+          });
           return false;
         }
         return true;
@@ -49,15 +88,22 @@
         renderList();
       };
 
-      // Function to toggle task status
+      // Check if all tasks are done
       const toggle = (index) => {
         Tasks[index].done = !Tasks[index].done;
         renderList();
 
-        // Check if all tasks are done
         let allDone = Tasks.length > 0 && Tasks.every((task) => task.done);
         if (allDone) {
-          alert("All tasks done!");
+          // alert("All tasks done!");
+          Swal.fire({
+            icon: "success",
+            title: "",
+            text: "All tasks done!",
+            background: "#18181B",
+            color: "#fff",
+            confirmButtonColor: "#FACC15",
+          });
         }
       };
 
@@ -69,25 +115,60 @@
 
         Tasks.forEach((task, index) => {
           const li = document.createElement("li");
-          li.textContent = task.name;
+          li.classList.add(
+            "p-3",
+            "rounded-lg",
+            "shadow-sm",
+            "hover:bg-[#FACC15]",
+            "cursor-pointer",
+            "flex",
+            "items-center",
+            "justify-between"
+          );
+
+          const taskText = document.createElement("span");
+          taskText.textContent = task.name;
+          taskText.classList.add("text-xss", "font-semibold");
+          li.appendChild(taskText);
 
           // if task is done or not
           if (task.done) {
-            li.style.textDecoration = "line-through";
+            taskText.style.textDecoration = "line-through";
           }
 
           // Button to toggle task status
           const toggleButton = document.createElement("button");
           toggleButton.textContent = "Toggle";
           toggleButton.addEventListener("click", () => toggle(index));
+          toggleButton.classList.add(
+            "ml-2",
+            "bg-blue-500",
+            "text-white",
+            "px-2",
+            "py-1",
+            "rounded"
+          );
 
           // Button to delete task
           const deleteButton = document.createElement("button");
           deleteButton.textContent = "Delete";
           deleteButton.addEventListener("click", () => deleteTask(index));
+          deleteButton.classList.add(
+            "ml-2",
+            "bg-red-500",
+            "text-white",
+            "px-2",
+            "py-1",
+            "rounded"
+          );
 
-          li.appendChild(toggleButton);
-          li.appendChild(deleteButton);
+          // li.appendChild(toggleButton);
+          // li.appendChild(deleteButton);
+          const buttonContainer = document.createElement("div");
+          buttonContainer.classList.add("flex", "items-center");
+          buttonContainer.appendChild(toggleButton);
+          buttonContainer.appendChild(deleteButton);
+          li.appendChild(buttonContainer);
           fragment.appendChild(li);
         });
 
